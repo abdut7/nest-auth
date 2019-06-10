@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 
-import { LoginDTO } from '../auth/auth.dto';
+import { LoginDTO, RegisterDTO } from '../auth/auth.dto';
 import { Payload } from '../entities/payload';
 import { User } from '../entities/user';
 
@@ -11,17 +11,17 @@ import { User } from '../entities/user';
 export class UserService {
   constructor(@InjectModel('User') private userModel: Model<User>) {}
 
-//   async create(userDTO: RegisterDTO) {
-//     const { username } = userDTO;
-//     const user = await this.userModel.findOne({ username });
-//     if (user) {
-//       throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
-//     }
+  async create(userDTO: RegisterDTO) {
+    const { username } = userDTO;
+    const user = await this.userModel.findOne({ username });
+    if (user) {
+      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+    }
 
-//     const createdUser = new this.userModel(userDTO);
-//     await createdUser.save();
-//     return this.sanitizeUser(createdUser);
-//   }
+    const createdUser = new this.userModel(userDTO);
+    await createdUser.save();
+    return this.sanitizeUser(createdUser);
+  }
 
   async find() {
     return await this.userModel.find();

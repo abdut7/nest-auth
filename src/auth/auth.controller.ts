@@ -1,9 +1,11 @@
-import { Body, Controller, Post, Get } from '@nestjs/common';
+import { Body, Controller, Post, Get, UseGuards } from '@nestjs/common';
 
 import { UserService } from '../shared/user.service';
 import { Payload } from '../entities/payload';
-import { LoginDTO } from './auth.dto';
+import { LoginDTO, RegisterDTO } from './auth.dto';
 import { AuthService } from './auth.service';
+import { AuthGuard } from '@nestjs/passport';
+
 
 @Controller('auth')
 export class AuthController {
@@ -11,6 +13,13 @@ export class AuthController {
     private userService: UserService,
     private authService: AuthService,
   ) {}
+  
+
+  @Get()
+  @UseGuards(AuthGuard('jwt'))
+  myAuthGuardtest(){
+return {auth:"works"}
+  }
 
   @Post('login')
   async login(@Body() userDTO: LoginDTO) {
@@ -23,14 +32,14 @@ export class AuthController {
     return { user, token };
   }
 
-//   @Post('register')
-//   async register(@Body() userDTO: RegisterDTO) {
-//     const user = await this.userService.create(userDTO);
-//     const payload: Payload = {
-//       username: user.username,
-//       seller: user.seller,
-//     };
-//     const token = await this.authService.signPayload(payload);
-//     return { user, token };
-//   }
+  @Post('register')
+  async register(@Body() userDTO: RegisterDTO) {
+    const user = await this.userService.create(userDTO);
+    const payload: Payload = {
+      username: user.username,
+      seller: user.seller,
+    };
+    const token = await this.authService.signPayload(payload);
+    return { user, token };
+  }
 }

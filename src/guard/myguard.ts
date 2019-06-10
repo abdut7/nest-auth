@@ -7,7 +7,7 @@ import {
   } from '@nestjs/common';
   
   @Injectable()
-  export class SellerGuard implements CanActivate {
+  export class MGuard implements CanActivate {
     constructor() {}
   
     canActivate(context: ExecutionContext) {
